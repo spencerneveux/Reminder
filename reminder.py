@@ -32,9 +32,10 @@ class Reminder:
     # ------------------------------------------
     def send_email(self, tournament, time, recipients):
         # Create yagmail object
-        email = yagmail.SMTP('Email@gmail.com', 'password')
+        email = yagmail.SMTP('email@teamliquid.net', 'password')
         # Get array of emails to send to
         recipients = recipients
+        print(recipients)
         # Body of the message
         body = ["Don't forget about the " + tournament + " tournament tomorrow at " + time,
                 "Please make sure to post a tweet about the tournament 1 - 2 hours prior",
@@ -43,8 +44,9 @@ class Reminder:
                 "starting at (insert time). Come watch us!",
                 "@Twitch.tv/yourtwitchhandle #LETSGOLIQUID"]
         # For loop to send email to each recipient
-        for recipient in recipients:
-            email.send(recipient, 'Reminder!', body)
+        # for recipient in recipients:
+        email.send(recipients, 'Reminder!', body)
+        print("Sent!")
 
     # ------------------------------------------
     # Time
@@ -58,7 +60,14 @@ class Reminder:
         criteria = q.year == str(dt.year) and q.month == str(dt.month) and q.day == str(dt.day + 1)
         # Search database for a date one day from now
         result = self.database.search(criteria)
-        print(result)
+        if result:
+            Email = Query()
+            players = self.database.search(Email.email.search('[teamliquid.net]'))
+            for i in range(len(players)):
+                print(players[i]['email'])
+                self.send_email(result[0]['tournament'], result[0]['time'], players[i]['email'])
+
+
     # ------------------------------------------
     # Main Menu
     # ------------------------------------------
@@ -112,8 +121,6 @@ class Reminder:
 def main():
     reminder = Reminder()
     reminder.database.purge()
-    reminder.main_menu()
-    reminder.handle_input()
 
 
 main()
