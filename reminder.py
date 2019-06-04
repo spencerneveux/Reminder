@@ -32,10 +32,9 @@ class Reminder:
     # ------------------------------------------
     def send_email(self, tournament, time, recipients):
         # Create yagmail object
-        email = yagmail.SMTP('email@teamliquid.net', 'password')
+        email = yagmail.SMTP('spencerneveux@teamliquid.net', 'idformwvbmhqnjlk')
         # Get array of emails to send to
         recipients = recipients
-        print(recipients)
         # Body of the message
         body = ["Don't forget about the " + tournament + " tournament tomorrow at " + time,
                 "Please make sure to post a tweet about the tournament 1 - 2 hours prior",
@@ -61,11 +60,13 @@ class Reminder:
         # Search database for a date one day from now
         result = self.database.search(criteria)
         if result:
+            print("Sending...")
             Email = Query()
             players = self.database.search(Email.email.search('[teamliquid.net]'))
             for i in range(len(players)):
-                print(players[i]['email'])
                 self.send_email(result[0]['tournament'], result[0]['time'], players[i]['email'])
+        else:
+            print('No tournament tomorrow')
 
 
     # ------------------------------------------
@@ -76,7 +77,8 @@ class Reminder:
         print('1. Add Tournament')
         print('2. Add Player')
         print('3. Drop Player')
-        print('4. Exit')
+        print('4. Send Reminder')
+        print('5. Exit')
     # ------------------------------------------
     # Input Handlers
     # ------------------------------------------
@@ -89,6 +91,8 @@ class Reminder:
             self.add_player()
         elif argument == 3:
             self.drop_player()
+        elif argument == 4:
+            self.check_date()
 
     # Method to collect tournament information and insert into db
     def add_tournament(self):
@@ -99,6 +103,7 @@ class Reminder:
         time = input("Enter time: ")
         prize = input("Enter prize: ")
         self.insert_tournament(name, year, month, day, time, prize)
+        print("Tournament Added!\n")
 
     # Method to collect player information and insert into db
     def add_player(self):
@@ -112,15 +117,21 @@ class Reminder:
         state = input("State: ")
         zipcode = input("Zipcode: ")
         self.insert_player(fname, lname, age, phone, email, address, city, state, zipcode)
+        print("Player Added!\n")
 
     # Method to drop player from database
     def drop_player(self):
         fname = input("First Name: ")
         lname = input("Last Name: ")
 
+# ------------------------------------------
+# MAIN
+# ------------------------------------------
 def main():
     reminder = Reminder()
-    reminder.database.purge()
+    reminder.main_menu()
+    reminder.handle_input()
 
-
+if __name__ == '__main__':
+    main()
 main()
