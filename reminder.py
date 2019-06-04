@@ -32,7 +32,7 @@ class Reminder:
     # ------------------------------------------
     def send_email(self, tournament, time, recipients):
         # Create yagmail object
-        email = yagmail.SMTP('spencerneveux@teamliquid.net', 'idformwvbmhqnjlk')
+        email = yagmail.SMTP('email@teamliquid.net', 'password')
         # Get array of emails to send to
         recipients = recipients
         # Body of the message
